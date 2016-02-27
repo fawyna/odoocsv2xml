@@ -16,6 +16,7 @@
 # This is because this script reads the field type from the way Odoo generates it in the .csv
 # csv should have 'id' as first column - you can set this id to your requirement
 # ambiguous columns: if column is char type but contains float string, should have special suffix on column name '|char'
+# if you have images run this script with 'image' as the argument, e.g. python csv2xml.py
 
 ### Relational fields ###
 # Automatic relation field One2many is NOT supported
@@ -25,8 +26,21 @@
 
 # v0.1
 
+import sys
 import csv
 import glob
+
+## PARAMETERS ### 
+
+# this script will run for as many .csv files in the same folder as this .py script
+# for data that should have noupdate = 0 instead of the default noupdate = 1, add
+#   the name of the file in this array
+FILES_WITH_UPDATE = ('product.product.csv')
+
+# for images please set this filepath
+# in the csv, ensure the header_id contains the word 'image'
+# 
+IMAGE_FILE_PATH = "img/"
 
 NOUPDATE = 1
 BOOLEAN = ('True', 'False')
@@ -38,11 +52,6 @@ ERP_FOOTER = """
     </data>
 </openerp>
 """
-
-# this script will run for as many .csv files in the same folder as this .py script
-# for data that should have noupdate = 0 instead of the default noupdate = 1, add
-#   the name of the file in this array
-FILES_WITH_UPDATE = ('product.product.csv')
 
 def convert_relational_field2xml(tag, value):
     mytag = tag
@@ -90,6 +99,8 @@ for csv_file in glob.glob('*.csv'):
                     # 'id' column is supposed to be the first left
                     line = ('<record id="%s" model="%s">\n'
                             % (row[i], csv_file[:-4]))
+                elif 'image' in tags[i]:
+                    line = '%simage" type="base64" file="%s%s"/>\n' % (begin,IMAGE_FILE_PATH,row[i])
                 elif '/' in tags[i] or ':' in tags[i]:
                     # relational fields
                     xml_suffix = convert_relational_field2xml(tags[i], row[i])
