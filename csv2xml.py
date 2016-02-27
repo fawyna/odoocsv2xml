@@ -3,18 +3,24 @@
 # http://code.activestate.com/recipes/577423-convert-csv-to-xml/
 # https://gist.github.com/bealdav/0d6f4ff4cda4b8820b22
 
-# convert csv files in xml files for Gronex
+# convert csv files from Odoo into xml files
 # csv is easy to maintain but xml data have noupdate feature
+# customer fills up the .xls sheet, then we turn it into .csv
+# then we use this script to convert it to .xml
 
-# HOW TO USE:
+### HOW TO USE: ###
 # Export CSV from any Odoo list view
 # Put this python script in the same folder as the csv file
 # The csv file MUST be named with the model and end with .csv, e.g. sale.order.csv
 # The headers for the csv file & model MUST be the same as the actual Odoo export
-# Automatic relation field One2many is NOT supported
-# In order to use One2many relation field, edit the csv file and enter the IDs to relate to (do not use purely numbers)
+# This is because this script reads the field type from the way Odoo generates it in the .csv
 # csv should have 'id' as first column - you can set this id to your requirement
 # ambiguous columns: if column is char type but contains float string, should have special suffix on column name '|char'
+
+### Relational fields ###
+# Automatic relation field One2many is NOT supported
+# In order to use One2many relation field, edit the csv file and enter the IDs to relate to (do not use purely numbers)
+
 # relational fields notation in csv should be: myfield_id/id for m2o or myfield_ids/id for m2m
 
 # v0.1
