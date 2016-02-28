@@ -23,13 +23,15 @@
 
 # relational fields notation in csv should be: myfield_id/id for m2o or myfield_ids/id for m2m
 
+### Additional notes: ###
+# This script will ignore values with __export__ in them
+
 # v0.1
 
-import sys
 import csv
 import glob
 
-## PARAMETERS ### 
+## PARAMETERS ###
 
 # this script will run for as many .csv files in the same folder as this .py script
 # for data that should have noupdate = 0 instead of the default noupdate = 1, add
@@ -38,7 +40,7 @@ FILES_WITH_UPDATE = ('product.product.csv')
 
 # for images please set this filepath
 # in the csv, ensure the header_id contains the word 'image'
-IMAGE_FILE_PATH = "img/"
+IMAGE_FILE_PATH = "static/src/img/"
 
 NOUPDATE = 1
 BOOLEAN = ('True', 'False')
@@ -96,9 +98,9 @@ for csv_file in glob.glob('*.csv'):
                 if tags[i] == 'id':
                     # 'id' column is supposed to be the first left
                     line = ('<record id="%s" model="%s">\n'
-                            % (row[i], csv_file[:-4]))
+                            % (row[i].replace('__export__.',''), csv_file[:-4]))
                 elif 'image' in tags[i]:
-                    line = '%s%s" type="base64" file="%s%s"/>\n' % (begin,tags[i],IMAGE_FILE_PATH,row[i])
+                    line = '%s%s" type="base64" file="%s%s"/>\n' % (begin, tags[i], IMAGE_FILE_PATH, row[i])
                 elif '/' in tags[i] or ':' in tags[i]:
                     # relational fields
                     xml_suffix = convert_relational_field2xml(tags[i], row[i])
@@ -111,7 +113,7 @@ for csv_file in glob.glob('*.csv'):
                 else:
                     # basic fields
                     line = '%s%s">%s</field>\n' % (begin, tags[i], row[i])
-                if row[i] or tags[i] == 'id':
+                if (row[i] or tags[i] == 'id') and '__export__' not in line:
                     xml_data.write(line)
             xml_data.write('</record>' + "\n\n")
         row_num += 1
