@@ -38,9 +38,10 @@ import glob
 #   the name of the file in this array
 FILES_WITH_UPDATE = ('product.product.csv')
 
-# for images please set this filepath
+# for images please set the name of the module that you will be installing this data with
 # in the csv, ensure the header_id contains the word 'image'
-IMAGE_FILE_PATH = "static/src/img/"
+MODULE_NAME = 'gronex_module_data'
+IMAGE_FILE_PATH = "%s/static/src/img/" % (MODULE_NAME)
 
 NOUPDATE = 1
 BOOLEAN = ('True', 'False')
